@@ -1,0 +1,6 @@
+name = "Test Project"
+version = "1.0"
+main = "de.nick.test.Main"
+
+[dependencies]
+"org.apache.maven:maven-model" = "3.9.6"

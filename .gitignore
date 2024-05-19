@@ -6,6 +6,9 @@ build/
 
 ### IntelliJ IDEA ###
 .idea
+!.idea/modules.xml
+!.idea/libraries
+!.idea/misc.xml
 
 ### Eclipse ###
 .apt_generated
@@ -40,3 +43,4 @@ testDir
 
 .jack-clone
 .out
+

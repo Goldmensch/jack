@@ -31,7 +31,6 @@ public record Config(
         var mainClass = result.getString("main");
         TomlTable dependencyTable = result.getTable("dependencies");
 
-
         return new Config(name, version, mainClass, parseDependencies(dependencyTable));
     }
 

@@ -45,4 +45,5 @@ testDir
 
 .out
 .out/**
+.olds
 

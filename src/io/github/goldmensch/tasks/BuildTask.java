@@ -1,11 +1,17 @@
 package io.github.goldmensch.tasks;
 
 import io.github.goldmensch.Jack;
-import io.github.goldmensch.config.Config;
 import io.github.goldmensch.config.Dependency;
+import io.github.goldmensch.config.SemVer;
+import io.github.goldmensch.sources.SourceSet;
 import io.github.goldmensch.utils.FileUtils;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.Parent;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -43,23 +49,16 @@ public final class BuildTask implements Task<Path> {
             downloadLibraries();
             compileClasses();
             return createJar();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | XmlPullParserException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void downloadLibraries() throws IOException, InterruptedException {
+    private void downloadLibraries() throws IOException, InterruptedException, XmlPullParserException {
         FileUtils.deleteRecursively(librariesDir);
         Files.createDirectories(librariesDir);
-        List<Dependency> dependencies = jack.config().dependencies();
-
-        for (Dependency dependency : dependencies) {
-            System.out.printf("Downloading library: %s%n", dependency);
-
-            var resource = dependency.artifactId() + "-" + dependency.version().versionString() + ".jar";
-            var request = buildMavenRequest(dependency, "https://repo.maven.apache.org/maven2/", resource);
-            Path path = httpClient.send(request, HttpResponse.BodyHandlers.ofFile(librariesDir.resolve(resource))).body();
-            libPaths.add(path);
+        for (Dependency dependency : jack.config().dependencies()) {
+            downloadDependency(dependency);
         }
     }
 
@@ -67,6 +66,67 @@ public final class BuildTask implements Task<Path> {
         String group = dependency.groupId().replace(".", "/");
         var url =  group + "/" + dependency.artifactId() + "/" + dependency.version().versionString() + "/" + resource;
         return HttpRequest.newBuilder(URI.create(root + url)).build();
+    }
+
+    private void downloadDependency(Dependency dependency) throws IOException, InterruptedException, XmlPullParserException {
+        System.out.printf("Downloading library: %s%n", dependency);
+
+        var resourcePrefix = dependency.artifactId() + "-" + dependency.version().versionString();
+        Model pom = fetchPom(dependency);
+        Model parent = pom.getParent() != null
+                ? fetchParent(pom.getParent())
+                : null;
+        for (org.apache.maven.model.Dependency pomModelDependency : pom.getDependencies()) {
+            String scope = pomModelDependency.getScope();
+            if (scope != null && !"runtime".equals(scope)) continue;
+
+            String artifactId = pomModelDependency.getArtifactId();
+            String groupId = pomModelDependency.getGroupId();
+            String version = pomModelDependency.getVersion();
+
+            if (version == null) {
+
+                System.out.println("must be in parent");
+                System.out.println(artifactId);
+                System.out.println(groupId);
+                System.out.println(parent.getDependencies());
+                version = parent.getDependencyManagement().getDependencies()
+                        .stream()
+                        .filter(item -> artifactId.equals(item.getArtifactId()) && groupId.equals(item.getGroupId()))
+                        .findAny()
+                        .orElseThrow()
+                        .getVersion();
+
+                if (version.startsWith("$")) {
+                    version = parent.getProperties().getProperty(version.replaceAll("[${}]", ""));
+                }
+            }
+
+            var jackDep = new Dependency(groupId, artifactId, SemVer.of(version));
+            downloadDependency(jackDep);
+        }
+
+        var jarResource = resourcePrefix + ".jar";
+        HttpRequest jarRequest = buildMavenRequest(dependency, "https://repo.maven.apache.org/maven2/", jarResource);
+        Path path = httpClient.send(jarRequest, HttpResponse.BodyHandlers.ofFile(librariesDir.resolve(jarResource))).body();
+        libPaths.add(path);
+    }
+
+    private Model fetchParent(Parent parent) throws XmlPullParserException, IOException, InterruptedException {
+        String artifactId = parent.getArtifactId();
+        String groupId = parent.getGroupId();
+        String version = parent.getVersion();
+        return fetchPom(new Dependency(groupId, artifactId, SemVer.of(version)));
+    }
+
+    private Model fetchPom(Dependency dependency) throws IOException, InterruptedException, XmlPullParserException {
+        System.out.println("fetching pom" + dependency);
+
+        var resourcePrefix = dependency.artifactId() + "-" + dependency.version().versionString();
+
+        HttpRequest pomRequest = buildMavenRequest(dependency, "https://repo.maven.apache.org/maven2/", resourcePrefix + ".pom");
+        InputStream pom = httpClient.send(pomRequest, HttpResponse.BodyHandlers.ofInputStream()).body();
+        return new MavenXpp3Reader().read(pom);
     }
 
     private void compileClasses() throws IOException, InterruptedException {

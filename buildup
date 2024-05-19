@@ -2,5 +2,15 @@
 
 ./jack build
 
+today=$(date +%s)
+
+echo "backup .jack to .olds/$today"
+mkdir -p .olds/$today
+cp -r .jack/* .olds/$today/
+
 echo "Copying to .jack directory"
+rm -rf .jack
+mkdir -p .jack/libs
+
 cp -f out/jars/jack.jar .jack/
+cp -fr out/libs .jack/

@@ -4,13 +4,18 @@ import io.github.goldmensch.Jack;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public final class RunTask implements Task<Void> {
 
     private final Jack jack;
+    private final String[] args;
 
-    public RunTask(Jack jack) {
+    public RunTask(Jack jack, String[] args) {
         this.jack = jack;
+        this.args = args;
     }
 
     @Override
@@ -20,9 +25,13 @@ public final class RunTask implements Task<Void> {
         String libClassPath = buildTask.libClassPath();
 
         var classPath = jarPath + ":" + libClassPath;
-        new ProcessBuilder("java", "-cp", classPath, jack.config().mainClass())
+
+        var finalArgs = new ArrayList<>(List.of("java", "-cp", classPath, jack.config().mainClass()));
+        finalArgs.addAll(Arrays.asList(args));
+        new ProcessBuilder(finalArgs)
                 .inheritIO()
                 .start();
+
         return null;
     }
 }

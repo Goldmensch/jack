@@ -8,6 +8,8 @@ import io.github.goldmensch.tasks.Task;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Jack {
 
@@ -16,7 +18,7 @@ public class Jack {
     private final SourceSet sourceSet;
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
+        if (args.length < 1) {
             System.out.println("You have to be provide a argument");
             return;
         }
@@ -27,7 +29,7 @@ public class Jack {
 
         Task<?> task = switch (args[0]) {
             case "build" -> new BuildTask(jack);
-            case "run" -> new RunTask(jack);
+            case "run" -> new RunTask(jack, Arrays.copyOfRange(args, 1, args.length));
             default -> throw new IllegalStateException("Unexpected task: " + args[0]);
         };
         task.run();

@@ -1,0 +1,6 @@
+#! /bin/sh
+
+./jack build
+
+echo "Copying to .jack directory"
+cp -f out/jars/jack.jar .jack/

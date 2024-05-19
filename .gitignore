@@ -42,5 +42,7 @@ bin/
 testDir
 
 .jack-clone
+
 .out
+.out/**
 

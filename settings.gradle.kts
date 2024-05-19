@@ -1,2 +1,2 @@
-rootProject.name = "JavaBuildSystem"
+rootProject.name = "jack"
 

@@ -4,13 +4,13 @@
 
 today=$(date +%s)
 
-echo "backup .jack to .olds/$today"
+echo "backup jack-binary to .olds/$today"
 mkdir -p .olds/$today
-cp -r .jack/* .olds/$today/
+cp -r jack-binary/* .olds/$today/
 
-echo "Copying to .jack directory"
-rm -rf .jack
-mkdir -p .jack/libs
+echo "Copying to jack-binary directory"
+rm -rf jack-binary
+mkdir -p jack-binary/libs
 
-cp -f out/jars/jack.jar .jack/
-cp -fr out/libs .jack/
+cp -f out/jars/jack.jar jack-binary/
+cp -fr out/libs jack-binary/

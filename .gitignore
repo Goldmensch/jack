@@ -47,3 +47,5 @@ testDir
 .out/**
 .olds
 
+.jack
+

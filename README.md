@@ -46,7 +46,7 @@ The `jack.toml` is the main configuration file the jack build tool. In this file
 #### Structure
 A `jack.toml` file is toml (version 1.0.0) file, that has the following structure:
 ```toml
-[package]
+[project]
 name = "project name"
 version = "project version, semver"
 author = "the project author"

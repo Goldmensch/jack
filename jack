@@ -1,3 +1,5 @@
 #! /bin/sh
+set -e
+
 classpath="jack-binary/jack.jar:jack-binary/libs/*"
 java -cp $classpath io.github.goldmensch.Jack ${@:1}

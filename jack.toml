@@ -1,7 +1,11 @@
+[project]
 name = "jack"
 version = "0.1"
-main = "io.github.goldmensch.Jack"
+author = "Nick Hensel"
 
 [dependencies]
 "org.tomlj:tomlj" = "1.1.1"
 "org.apache.maven:maven-model" = "3.9.6"
+
+[manifest]
+main = "io.github.goldmensch.Jack"

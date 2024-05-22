@@ -57,7 +57,7 @@ public final class BuildTask implements Task<Path> {
     private void downloadLibraries() throws IOException, InterruptedException, XmlPullParserException {
         FileUtils.deleteRecursively(librariesDir);
         Files.createDirectories(librariesDir);
-        for (Dependency dependency : jack.config().dependencies()) {
+        for (Dependency dependency : jack.config().dependencies().dependencies()) {
             downloadDependency(dependency);
         }
     }
@@ -146,8 +146,8 @@ public final class BuildTask implements Task<Path> {
     }
 
     private Path createJar() throws IOException, InterruptedException {
-        var outPath = outDir.resolve(Path.of("jars", jack.config().name() + ".jar"));
-        var jarArgs = List.of("jar", "--create", "--file", outPath.toString(), "--main-class", jack.config().mainClass(), "-C", classDir.toString(), ".");
+        var outPath = outDir.resolve(Path.of("jars", jack.config().project().name()) + ".jar");
+        var jarArgs = List.of("jar", "--create", "--file", outPath.toString(), "--main-class", jack.config().manifest().mainClass(), "-C", classDir.toString(), ".");
 
         new ProcessBuilder(jarArgs)
                 .inheritIO()

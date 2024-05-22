@@ -19,18 +19,22 @@ public final class RunTask implements Task<Void> {
     }
 
     @Override
-    public Void run() throws IOException {
+    public Void run() throws IOException, InterruptedException {
         BuildTask buildTask = new BuildTask(jack);
         Path jarPath = buildTask.run();
         String libClassPath = buildTask.libClassPath();
 
         var classPath = jarPath + ":" + libClassPath;
 
-        var finalArgs = new ArrayList<>(List.of("java", "-cp", classPath, jack.config().mainClass()));
+        var finalArgs = new ArrayList<>(List.of("java", "-cp", classPath, jack.config().manifest().mainClass()));
         finalArgs.addAll(Arrays.asList(args));
-        new ProcessBuilder(finalArgs)
+        var process = new ProcessBuilder(finalArgs)
                 .inheritIO()
                 .start();
+        var exitCode = process.waitFor();
+        if (exitCode != 0) {
+            System.exit(exitCode);
+        }
 
         return null;
     }

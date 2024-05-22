@@ -8,11 +8,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import static io.github.goldmensch.config.Values.required;
+
 public record Config(
-        String name,
-        SemVer version,
-        String mainClass,
-        List<Dependency> dependencies
+        Project project,
+        Manifest manifest,
+        Dependencies dependencies,
+        Packaging packaging,
+        Repositories repositories
 ) {
     public static Config read(Path root) throws IOException {
         var source = root.resolve("jack.toml");
@@ -22,26 +25,16 @@ public record Config(
             throw new IllegalArgumentException("Invalid toml file: " + source + "\n" + parseResult.errors());
         }
 
-        return createConfig(parseResult);
+        return createConfig(new Values(parseResult));
     }
 
-    private static Config createConfig(TomlTable result) {
-        var name = result.getString("name");
-        var version = SemVer.of(result.getString("version"));
-        var mainClass = result.getString("main");
-        TomlTable dependencyTable = result.getTable("dependencies");
-
-        return new Config(name, version, mainClass, parseDependencies(dependencyTable));
-    }
-
-    private static List<Dependency> parseDependencies(TomlTable depTable) {
-        return depTable.entrySet()
-                .stream()
-                .map(entry -> {
-                    var composedId = entry.getKey();
-                    var version = SemVer.of(((String) entry.getValue()));
-                    return Dependency.of(composedId, version);
-                })
-                .toList();
+    private static Config createConfig(Values values) {
+        return new Config(
+                required(values.parseCategory("project", Project::of)),
+                values.parseCategory("manifest", Manifest::of),
+                values.parseCategory("dependencies", Dependencies::of),
+                values.parseCategory("packaging", Packaging::of),
+                values.parseCategory("repositories", Repositories::of)
+        );
     }
 }

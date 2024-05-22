@@ -17,22 +17,27 @@ public class Jack {
     private final Config config;
     private final SourceSet sourceSet;
 
-    public static void main(String[] args) throws IOException {
-        if (args.length < 1) {
-            System.out.println("You have to be provide an argument");
-            return;
+    public static void main(String[] args) {
+        try {
+            if (args.length < 1) {
+                System.out.println("You have to be provide an argument");
+                return;
+            }
+
+            Config config = Config.read(ROOT);
+            SourceSet sourceSet = SourceSet.read(ROOT);
+            var jack = new Jack(config, sourceSet);
+
+            Task<?> task = switch (args[0]) {
+                case "build" -> new BuildTask(jack);
+                case "run" -> new RunTask(jack, Arrays.copyOfRange(args, 1, args.length));
+                default -> throw new IllegalStateException("Unexpected task: " + args[0]);
+            };
+            task.run();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
         }
-
-        Config config = Config.read(ROOT);
-        SourceSet sourceSet = SourceSet.read(ROOT);
-        var jack = new Jack(config, sourceSet);
-
-        Task<?> task = switch (args[0]) {
-            case "build" -> new BuildTask(jack);
-            case "run" -> new RunTask(jack, Arrays.copyOfRange(args, 1, args.length));
-            default -> throw new IllegalStateException("Unexpected task: " + args[0]);
-        };
-        task.run();
     }
 
    public Jack(Config config, SourceSet sourceSet) {

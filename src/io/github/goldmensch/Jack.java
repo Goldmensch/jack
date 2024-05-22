@@ -19,7 +19,7 @@ public class Jack {
 
     public static void main(String[] args) throws IOException {
         if (args.length < 1) {
-            System.out.println("You have to be provide a argument");
+            System.out.println("You have to be provide an argument");
             return;
         }
 

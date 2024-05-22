@@ -46,11 +46,14 @@ The `jack.toml` is the main configuration file the jack build tool. In this file
 #### Structure
 A `jack.toml` file is toml (version 1.0.0) file, that has the following structure:
 ```toml
-[package]
+[project]
 name = "project name"
 version = "project version, semver"
 author = "the project author"
 authors = ["author 1", "author 2", "..."]
+
+[packaging]
+type = "one of: jar" # Example: type = "jar"
 
 [repositories]
 "url" = "type, one of: maven" # Example: "https://repo.maven.apache.org/maven2/" = "maven"

@@ -8,26 +8,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class RunTask implements Task<Void> {
+public final class RunTask extends Task {
 
     private final Jack jack;
-    private final String[] args;
 
-    public RunTask(Jack jack, String[] args) {
+    public RunTask(Jack jack) {
+        super(jack, TaskType.BUILD);
         this.jack = jack;
-        this.args = args;
     }
 
     @Override
-    public Void run() throws IOException, InterruptedException {
-        BuildTask buildTask = new BuildTask(jack);
-        Path jarPath = buildTask.run();
+    public void run() throws IOException, InterruptedException {
+        BuildTask buildTask = dependency(TaskType.BUILD);
+        Path jarPath = buildTask.jarPath();
         String libClassPath = buildTask.libClassPath();
 
         var classPath = jarPath + ":" + libClassPath;
 
         var finalArgs = new ArrayList<>(List.of("java", "-cp", classPath, jack.config().manifest().mainClass()));
-        finalArgs.addAll(Arrays.asList(args));
+        finalArgs.addAll(Arrays.asList(jack.args()));
         var process = new ProcessBuilder(finalArgs)
                 .inheritIO()
                 .start();
@@ -35,7 +34,5 @@ public final class RunTask implements Task<Void> {
         if (exitCode != 0) {
             System.exit(exitCode);
         }
-
-        return null;
     }
 }

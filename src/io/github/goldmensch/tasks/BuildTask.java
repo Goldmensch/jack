@@ -3,7 +3,6 @@ package io.github.goldmensch.tasks;
 import io.github.goldmensch.Jack;
 import io.github.goldmensch.config.Dependency;
 import io.github.goldmensch.config.SemVer;
-import io.github.goldmensch.sources.SourceSet;
 import io.github.goldmensch.utils.FileUtils;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class BuildTask implements Task<Path> {
+public final class BuildTask extends Task {
 
     private final HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -31,9 +30,12 @@ public final class BuildTask implements Task<Path> {
     private final Path classDir;
     private final Path librariesDir;
 
+    private Path jarPath;
+
     private final List<Path> libPaths = new ArrayList<>();
 
     public BuildTask(Jack jack) {
+        super(jack);
         this.jack = jack;
         this.outDir = jack.root().resolve(Path.of("out")).toAbsolutePath();
         this.classDir = outDir.resolve("classes");
@@ -41,14 +43,14 @@ public final class BuildTask implements Task<Path> {
     }
 
     @Override
-    public Path run() {
+    public void run() {
         try {
             libPaths.clear();
             FileUtils.deleteRecursively(jack.root().resolve("out"));
 
             downloadLibraries();
             compileClasses();
-            return createJar();
+            createJar();
         } catch (IOException | InterruptedException | XmlPullParserException e) {
             throw new RuntimeException(e);
         }
@@ -85,7 +87,6 @@ public final class BuildTask implements Task<Path> {
             String version = pomModelDependency.getVersion();
 
             if (version == null) {
-
                 System.out.println("must be in parent");
                 System.out.println(artifactId);
                 System.out.println(groupId);
@@ -98,10 +99,16 @@ public final class BuildTask implements Task<Path> {
                         .getVersion();
 
                 if (version.startsWith("$")) {
-                    version = parent.getProperties().getProperty(version.replaceAll("[${}]", ""));
+                    if (version.equals("${project.version}")) {
+                        version = parent.getVersion();
+                    } else {
+                        version = parent.getProperties().getProperty(version.replaceAll("[${}]", ""));
+                    }
                 }
             }
 
+            System.out.println("DOOP: " + pomModelDependency);
+            System.out.println(version);
             var jackDep = new Dependency(groupId, artifactId, SemVer.of(version));
             downloadDependency(jackDep);
         }
@@ -145,15 +152,14 @@ public final class BuildTask implements Task<Path> {
         process.waitFor();
     }
 
-    private Path createJar() throws IOException, InterruptedException {
-        var outPath = outDir.resolve(Path.of("jars", jack.config().project().name()) + ".jar");
-        var jarArgs = List.of("jar", "--create", "--file", outPath.toString(), "--main-class", jack.config().manifest().mainClass(), "-C", classDir.toString(), ".");
+    private void createJar() throws IOException, InterruptedException {
+        this.jarPath = outDir.resolve(Path.of("jars", jack.config().project().name()) + ".jar");
+        var jarArgs = List.of("jar", "--create", "--file", jarPath.toString(), "--main-class", jack.config().manifest().mainClass(), "-C", classDir.toString(), ".");
 
         new ProcessBuilder(jarArgs)
                 .inheritIO()
                 .start()
                 .waitFor();
-        return outPath;
     }
 
     public String libClassPath() {
@@ -161,5 +167,9 @@ public final class BuildTask implements Task<Path> {
                 .stream()
                 .map(path -> path.toAbsolutePath().toString())
                 .collect(Collectors.joining(":"));
+    }
+
+    public Path jarPath() {
+        return jarPath;
     }
 }

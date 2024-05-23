@@ -6,9 +6,7 @@ import io.github.goldmensch.tasks.BuildTask;
 import io.github.goldmensch.tasks.RunTask;
 import io.github.goldmensch.tasks.Task;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Jack {
@@ -16,6 +14,7 @@ public class Jack {
     private static final Path ROOT = Path.of("");
     private final Config config;
     private final SourceSet sourceSet;
+    private final String[] args;
 
     public static void main(String[] args) {
         try {
@@ -26,23 +25,24 @@ public class Jack {
 
             Config config = Config.read(ROOT);
             SourceSet sourceSet = SourceSet.read(ROOT);
-            var jack = new Jack(config, sourceSet);
+            var jack = new Jack(config, sourceSet, Arrays.copyOfRange(args, 1, args.length));
 
-            Task<?> task = switch (args[0]) {
+            Task task = switch (args[0]) {
                 case "build" -> new BuildTask(jack);
-                case "run" -> new RunTask(jack, Arrays.copyOfRange(args, 1, args.length));
+                case "run" -> new RunTask(jack);
                 default -> throw new IllegalStateException("Unexpected task: " + args[0]);
             };
-            task.run();
+            task.process();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         }
     }
 
-   public Jack(Config config, SourceSet sourceSet) {
+   public Jack(Config config, SourceSet sourceSet, String[] args) {
         this.config = config;
-       this.sourceSet = sourceSet;
+        this.sourceSet = sourceSet;
+        this.args = args;
    }
 
     public Config config() {
@@ -55,5 +55,9 @@ public class Jack {
 
     public Path root() {
         return ROOT;
+    }
+
+    public String[] args() {
+        return args;
     }
 }

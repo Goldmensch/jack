@@ -11,12 +11,16 @@ import org.eclipse.aether.repository.NoLocalRepositoryManagerException;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class Jack {
+
+    public static final Logger log = LoggerFactory.getLogger(Jack.class);
 
     private final ProjectConfig config;
     private final SourceSet sourceSet;
@@ -40,7 +44,7 @@ public class Jack {
 
    private void run() throws ArtifactResolutionException, DependencyCollectionException, DependencyResolutionException, IOException, NoLocalRepositoryManagerException, InterruptedException, ArtifactDescriptorException {
        if (args.length < 1) {
-           System.out.println("You have to be provide an argument");
+           log.error("You have to provide an argument!");
            return;
        }
 
@@ -50,6 +54,8 @@ public class Jack {
            case "dependencies" -> new DependenciesTask(this);
            default -> throw new IllegalStateException("Unexpected task: " + args[0]);
        };
+
+       log.debug("Found task {}", task);
 
        task.process();
    }

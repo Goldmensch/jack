@@ -9,8 +9,7 @@ public record Packaging(
     }
 
     public enum Type {
-        JAR
-        ;
+        JAR;
 
         static Type of(String type) {
             return switch (type) {

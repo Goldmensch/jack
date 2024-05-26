@@ -1,14 +1,17 @@
 package io.github.goldmensch.tasks;
 
 import io.github.goldmensch.Jack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public final class RunTask extends Task {
+
+    public static final Logger log = LoggerFactory.getLogger(RunTask.class);
 
     private final Jack jack;
 
@@ -27,12 +30,9 @@ public final class RunTask extends Task {
 
         var finalArgs = new ArrayList<>(List.of("java", "-cp", classPath, jack.projectConfig().manifest().mainClass()));
 
-        List<String> list = Arrays.stream(jack.args())
-                .skip(1)
-                .filter(s -> !s.startsWith("-"))
-                .toList();
+        log.info("Running with arguments {}", jack.providedArgs());
 
-        finalArgs.addAll(list);
+        finalArgs.addAll(jack.providedArgs());
         var process = new ProcessBuilder(finalArgs)
                 .inheritIO()
                 .start();

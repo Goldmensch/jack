@@ -12,6 +12,7 @@ public record Repository(
             case "mavenCentral" -> new Repository("https://repo.maven.apache.org/maven2/", Type.MAVEN);
             default -> null;
         };
+
         if (defaultFound != null) {
             return entry.getValue().equals(true)
                     ? defaultFound

@@ -2,6 +2,8 @@ package io.github.goldmensch.tasks;
 
 import io.github.goldmensch.Jack;
 import io.github.goldmensch.utils.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 
 public final class BuildTask extends Task {
 
+    private static final Logger log = LoggerFactory.getLogger(BuildTask.class);
     private Path jarPath;
 
     public BuildTask(Jack jack) {
@@ -38,6 +41,8 @@ public final class BuildTask extends Task {
         Files.createDirectories(jack.paths().distributions());
         Files.createDirectories(jack.paths().distributionLibs());
 
+        log.info("Packaging distribution");
+
         for (Path libPath : ((DependenciesTask) dependency(TaskType.DEPENDENCIES)).libraryJars()) {
             Files.copy(libPath, jack.paths().distributionLibs().resolve(libPath.getFileName()));
         }
@@ -48,7 +53,10 @@ public final class BuildTask extends Task {
     private void compileClasses() throws IOException, InterruptedException {
         Files.createDirectories(jack.paths().classes());
 
-        var args = new ArrayList<>(List.of("javac", "-d", jack.paths().classes().toString(), "-cp", libClassPath()));
+        log.info("Compiling java classes");
+
+        // disable annotation processing for now
+        var args = new ArrayList<>(List.of("javac", "-proc:none", "-d", jack.paths().classes().toString(), "-cp", libClassPath()));
         jack.sourceSet().files()
                 .stream()
                 .map(Path::toAbsolutePath)
@@ -63,9 +71,10 @@ public final class BuildTask extends Task {
 
     private void createJar() throws IOException, InterruptedException {
         this.jarPath = jack.paths().out().resolve(Path.of("jars", jack.projectConfig().project().name()) + ".jar");
-        var jarArgs = new ArrayList<String>();
 
-        jarArgs.addAll(List.of("jar", "--create", "--file", jarPath.toString(), "--main-class", jack.projectConfig().manifest().mainClass(), "-C", jack.paths().classes().toString(), "."));
+        log.info("Creating jar file");
+
+        var jarArgs = new ArrayList<>(List.of("jar", "--create", "--file", jarPath.toString(), "--main-class", jack.projectConfig().manifest().mainClass(), "-C", jack.paths().classes().toString(), "."));
         if (Files.exists(jack.paths().resources())) {
             jarArgs.addAll(List.of("-C", jack.paths().resources().toString(), "."));
         }

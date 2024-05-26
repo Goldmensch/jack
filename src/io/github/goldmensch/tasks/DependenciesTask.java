@@ -15,6 +15,8 @@ import org.eclipse.aether.resolution.*;
 import org.eclipse.aether.supplier.RepositorySystemSupplier;
 import org.eclipse.aether.util.artifact.JavaScopes;
 import org.eclipse.aether.util.graph.visitor.DependencyGraphDumper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -23,6 +25,8 @@ import java.util.List;
 
 public final class DependenciesTask extends Task {
 
+    public static final Logger log = LoggerFactory.getLogger(DependenciesTask.class);
+    
     private static final RepositorySystemSupplier REPOSITORY_SYSTEM_SUPPLIER = new RepositorySystemSupplier();
 
     private final RepositorySystemSession session;
@@ -52,10 +56,6 @@ public final class DependenciesTask extends Task {
 
     @Override
     protected void run() throws IOException, InterruptedException, ArtifactResolutionException, NoLocalRepositoryManagerException, DependencyCollectionException, DependencyResolutionException, ArtifactDescriptorException {
-        fetchDependencies();
-    }
-
-    private void fetchDependencies() throws DependencyResolutionException {
         List<org.eclipse.aether.graph.Dependency> dependencies = jack.projectConfig().dependencies().dependencies()
                 .stream()
                 .map(dependency -> {
@@ -73,6 +73,9 @@ public final class DependenciesTask extends Task {
 
         DependencyResult result = repositorySystem.resolveDependencies(session, dependencyRequest);
 
+        result.getArtifactResults()
+                .forEach(resultEntry -> log.info("Resolved dependency: {}", resultEntry));
+        
         if (jack.providedArgs().contains("graph")) {
             DependencyGraphDumper dependencyGraphDumper = new DependencyGraphDumper(System.out::println);
             result.getRoot().accept(dependencyGraphDumper);

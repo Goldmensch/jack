@@ -6,12 +6,15 @@ import org.eclipse.aether.repository.NoLocalRepositoryManagerException;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
 
 public sealed abstract class Task permits BuildTask, DependenciesTask, RunTask {
 
+    private static final Logger log = LoggerFactory.getLogger(Task.class);
     protected final Jack jack;
     private final Collection<TaskType> dependencyTypes;
     private Map<TaskType, Task> dependencies;
@@ -41,6 +44,9 @@ public sealed abstract class Task permits BuildTask, DependenciesTask, RunTask {
             ranTasks.put(type, task);
         }
         this.dependencies = ranTasks;
+
+        log.info("Execute task: {}", TaskType.of(this));
+
         run();
     }
 }

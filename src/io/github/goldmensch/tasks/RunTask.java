@@ -25,7 +25,7 @@ public final class RunTask extends Task {
 
         var classPath = jarPath + ":" + libClassPath;
 
-        var finalArgs = new ArrayList<>(List.of("java", "-cp", classPath, jack.config().manifest().mainClass()));
+        var finalArgs = new ArrayList<>(List.of("java", "-cp", classPath, jack.projectConfig().manifest().mainClass()));
 
         List<String> list = Arrays.stream(jack.args())
                 .skip(1)

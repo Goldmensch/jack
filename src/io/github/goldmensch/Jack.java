@@ -1,6 +1,6 @@
 package io.github.goldmensch;
 
-import io.github.goldmensch.config.Config;
+import io.github.goldmensch.config.project.ProjectConfig;
 import io.github.goldmensch.sources.SourceSet;
 import io.github.goldmensch.tasks.BuildTask;
 import io.github.goldmensch.tasks.DependenciesTask;
@@ -13,10 +13,12 @@ import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class Jack {
 
-    private final Config config;
+    private final ProjectConfig config;
     private final SourceSet sourceSet;
     private final String[] args;
     private final Paths paths;
@@ -24,12 +26,12 @@ public class Jack {
     public static void main(String[] args) throws IOException, ArtifactResolutionException, DependencyCollectionException, DependencyResolutionException, NoLocalRepositoryManagerException, InterruptedException, ArtifactDescriptorException {
         Paths paths = Paths.create();
 
-        Config config = Config.read(paths.config());
+        ProjectConfig config = ProjectConfig.read(paths.config());
         SourceSet sourceSet = SourceSet.read(paths.source());
         new Jack(args, paths, config, sourceSet).run();
     }
 
-   public Jack(String[] args, Paths paths, Config config, SourceSet sourceSet) {
+   public Jack(String[] args, Paths paths, ProjectConfig config, SourceSet sourceSet) {
         this.config = config;
         this.sourceSet = sourceSet;
         this.args = args;
@@ -52,7 +54,7 @@ public class Jack {
        task.process();
    }
 
-    public Config config() {
+    public ProjectConfig projectConfig() {
         return config;
     }
 
@@ -62,6 +64,10 @@ public class Jack {
 
     public Paths paths() {
         return paths;
+    }
+
+    public List<String> providedArgs() {
+        return Arrays.asList(Arrays.copyOfRange(args, 1, args.length));
     }
 
     public String[] args() {

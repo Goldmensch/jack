@@ -14,7 +14,10 @@ public record Paths(
         Path classes,
         Path jars,
         Path mavenCache,
-        Path libs
+        Path distributions,
+        Path distributionLibs,
+        Path resources,
+        Path outResources
 ) {
     static Paths create() throws IOException {
         var root = Files.createDirectories(Path.of(""));
@@ -24,11 +27,14 @@ public record Paths(
         var classes = Files.createDirectories(out.resolve("classes"));
         var jars = Files.createDirectories(out.resolve("jars"));
         var mavenCache = Files.createDirectories(caches.resolve("maven"));
-        var libs = Files.createDirectories(out.resolve("libs"));
+        var distributions = Files.createDirectories(out.resolve("distributions"));
+        var distributionLibs = Files.createDirectories(distributions.resolve("libs"));
+        var outResources = Files.createDirectories(out.resolve("resources"));
 
 
         var config = root.resolve("jack.toml");
         var source = root.resolve("src");
+        var resources = root.resolve("resources");
         return new Paths(
                 root,
                 jack,
@@ -39,7 +45,10 @@ public record Paths(
                 classes,
                 jars,
                 mavenCache,
-                libs
+                distributions,
+                distributionLibs,
+                resources,
+                outResources
         );
     }
 }

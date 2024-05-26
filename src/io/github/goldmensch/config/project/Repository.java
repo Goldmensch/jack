@@ -1,4 +1,4 @@
-package io.github.goldmensch.config;
+package io.github.goldmensch.config.project;
 
 import java.util.Map;
 

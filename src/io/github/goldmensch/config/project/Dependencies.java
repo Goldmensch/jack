@@ -1,6 +1,4 @@
-package io.github.goldmensch.config;
-
-import org.tomlj.TomlTable;
+package io.github.goldmensch.config.project;
 
 import java.util.Collection;
 import java.util.List;

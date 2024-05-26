@@ -24,22 +24,25 @@ public final class BuildTask extends Task {
             FileUtils.deleteRecursively(jack.paths().classes());
             FileUtils.deleteRecursively(jack.paths().jars());
 
-            copyJarsToLib();
-
             compileClasses();
             createJar();
+
+            createDistribution();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void copyJarsToLib() throws IOException {
-        FileUtils.deleteRecursively(jack.paths().libs());
-        Files.createDirectories(jack.paths().libs());
+    private void createDistribution() throws IOException {
+        FileUtils.deleteRecursively(jack.paths().distributions());
+        Files.createDirectories(jack.paths().distributions());
+        Files.createDirectories(jack.paths().distributionLibs());
 
         for (Path libPath : ((DependenciesTask) dependency(TaskType.DEPENDENCIES)).libraryJars()) {
-            Files.copy(libPath, jack.paths().libs().resolve(libPath.getFileName()));
+            Files.copy(libPath, jack.paths().distributionLibs().resolve(libPath.getFileName()));
         }
+
+        Files.copy(jarPath, jack.paths().distributions().resolve(jarPath.getFileName()));
     }
 
     private void compileClasses() throws IOException, InterruptedException {
@@ -59,8 +62,13 @@ public final class BuildTask extends Task {
     }
 
     private void createJar() throws IOException, InterruptedException {
-        this.jarPath = jack.paths().out().resolve(Path.of("jars", jack.config().project().name()) + ".jar");
-        var jarArgs = List.of("jar", "--create", "--file", jarPath.toString(), "--main-class", jack.config().manifest().mainClass(), "-C", jack.paths().classes().toString(), ".");
+        this.jarPath = jack.paths().out().resolve(Path.of("jars", jack.projectConfig().project().name()) + ".jar");
+        var jarArgs = new ArrayList<String>();
+
+        jarArgs.addAll(List.of("jar", "--create", "--file", jarPath.toString(), "--main-class", jack.projectConfig().manifest().mainClass(), "-C", jack.paths().classes().toString(), "."));
+        if (Files.exists(jack.paths().resources())) {
+            jarArgs.addAll(List.of("-C", jack.paths().resources().toString(), "."));
+        }
 
         new ProcessBuilder(jarArgs)
                 .inheritIO()

@@ -1,9 +1,9 @@
-package io.github.goldmensch.config;
+package io.github.goldmensch.config.project;
 
 import java.util.Collection;
 import java.util.List;
 
-import static io.github.goldmensch.config.Values.required;
+import static io.github.goldmensch.config.project.Values.required;
 
 public record Project(
         String name,

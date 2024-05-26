@@ -11,8 +11,7 @@ mkdir -p .olds/$today
 cp -r jack-binary/* .olds/$today/
 
 echo "Copying to jack-binary directory"
-rm -rf jack-binary
-mkdir -p jack-binary/libs
+rm -rf jack-binary/*
+mkdir -p jack-binary
 
-cp -f out/jars/jack.jar jack-binary/
-cp -fr out/libs jack-binary/
+cp -fr out/distributions/* jack-binary/

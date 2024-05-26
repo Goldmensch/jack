@@ -1,4 +1,4 @@
-package io.github.goldmensch.config;
+package io.github.goldmensch.config.project;
 
 import org.tomlj.TomlArray;
 import org.tomlj.TomlTable;

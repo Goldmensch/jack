@@ -39,7 +39,7 @@ public final class DependenciesTask extends Task {
         DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession()
                 .setSystemProperty("java.version", "21");
 
-        List<RemoteRepository> repositories = jack.config().repositories().repositories()
+        List<RemoteRepository> repositories = jack.projectConfig().repositories().repositories()
                 .stream()
                 .map(repository -> new RemoteRepository.Builder(null, "default", repository.url()))
                 .map(RemoteRepository.Builder::build)
@@ -56,7 +56,7 @@ public final class DependenciesTask extends Task {
     }
 
     private void fetchDependencies() throws DependencyResolutionException {
-        List<org.eclipse.aether.graph.Dependency> dependencies = jack.config().dependencies().dependencies()
+        List<org.eclipse.aether.graph.Dependency> dependencies = jack.projectConfig().dependencies().dependencies()
                 .stream()
                 .map(dependency -> {
                     DefaultArtifact defaultArtifact = new DefaultArtifact(dependency.groupId(), dependency.artifactId(), "jar", dependency.version());
@@ -73,8 +73,10 @@ public final class DependenciesTask extends Task {
 
         DependencyResult result = repositorySystem.resolveDependencies(session, dependencyRequest);
 
-        DependencyGraphDumper dependencyGraphDumper = new DependencyGraphDumper(System.out::println);
-        result.getRoot().accept(dependencyGraphDumper);
+        if (jack.providedArgs().contains("graph")) {
+            DependencyGraphDumper dependencyGraphDumper = new DependencyGraphDumper(System.out::println);
+            result.getRoot().accept(dependencyGraphDumper);
+        }
 
         libraryJars = result.getArtifactResults()
                 .stream()

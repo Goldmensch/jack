@@ -7,6 +7,17 @@ public record Repository(
         Type type
 ) {
     static Repository of(Map.Entry<String, Object> entry) {
+
+        var defaultFound = switch (entry.getKey()) {
+            case "mavenCentral" -> new Repository("https://repo.maven.apache.org/maven2/", Type.MAVEN);
+            default -> null;
+        };
+        if (defaultFound != null) {
+            return entry.getValue().equals(true)
+                    ? defaultFound
+                    : null;
+        }
+
         var url = entry.getKey();
         var type = Type.of(((String) entry.getValue()));
         return new Repository(url, type);

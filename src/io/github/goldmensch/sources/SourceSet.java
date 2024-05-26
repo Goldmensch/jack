@@ -13,8 +13,8 @@ public class SourceSet {
         this.files = files;
     }
 
-    public static SourceSet read(Path root) throws IOException {
-        Set<Path> files = Files.walk(root.resolve("src"))
+    public static SourceSet read(Path source) throws IOException {
+        Set<Path> files = Files.walk(source)
                 .filter(Files::isRegularFile)
                 .collect(Collectors.toUnmodifiableSet());
         return new SourceSet(files);

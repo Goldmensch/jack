@@ -5,20 +5,15 @@ import java.util.Map;
 public record Dependency(
         String groupId,
         String artifactId,
-        SemVer version
+        String version
 ) {
 
     static Dependency of(Map.Entry<String, Object> entry) {
-        var version = SemVer.of(((String) entry.getValue()));
-        return of(entry.getKey(), version);
+        return of(entry.getKey(), ((String) entry.getValue()));
     }
 
-    public static Dependency of(String id, SemVer version) {
+    public static Dependency of(String id, String version) {
         String[] parts = id.split(":");
         return new Dependency(parts[0], parts[1], version);
-    }
-
-    public String[] groupIdParts() {
-        return groupId.split("\\.");
     }
 }

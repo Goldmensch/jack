@@ -2,11 +2,9 @@ package io.github.goldmensch.config;
 
 import org.tomlj.Toml;
 import org.tomlj.TomlParseResult;
-import org.tomlj.TomlTable;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 import static io.github.goldmensch.config.Values.required;
 
@@ -17,12 +15,11 @@ public record Config(
         Packaging packaging,
         Repositories repositories
 ) {
-    public static Config read(Path root) throws IOException {
-        var source = root.resolve("jack.toml");
-        TomlParseResult parseResult = Toml.parse(source);
+    public static Config read(Path config) throws IOException {
+        TomlParseResult parseResult = Toml.parse(config);
 
         if (parseResult.hasErrors()) {
-            throw new IllegalArgumentException("Invalid toml file: " + source + "\n" + parseResult.errors());
+            throw new IllegalArgumentException("Invalid toml file: " + config + "\n" + parseResult.errors());
         }
 
         return createConfig(new Values(parseResult));

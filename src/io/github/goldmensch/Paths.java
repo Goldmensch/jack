@@ -17,7 +17,8 @@ public record Paths(
         Path distributions,
         Path distributionLibs,
         Path resources,
-        Path outResources
+        Path outResources,
+        Path sbom
 ) {
     static Paths create() throws IOException {
         var root = Files.createDirectories(Path.of(""));
@@ -35,6 +36,7 @@ public record Paths(
         var config = root.resolve("jack.toml");
         var source = root.resolve("src");
         var resources = root.resolve("resources");
+        var sbom = root.resolve("bom.json");
         return new Paths(
                 root,
                 jack,
@@ -48,7 +50,8 @@ public record Paths(
                 distributions,
                 distributionLibs,
                 resources,
-                outResources
+                outResources,
+                sbom
         );
     }
 }

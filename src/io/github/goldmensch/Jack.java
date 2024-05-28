@@ -6,6 +6,7 @@ import io.github.goldmensch.tasks.BuildTask;
 import io.github.goldmensch.tasks.DependenciesTask;
 import io.github.goldmensch.tasks.RunTask;
 import io.github.goldmensch.tasks.Task;
+import org.cyclonedx.exception.ParseException;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.repository.NoLocalRepositoryManagerException;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
@@ -27,7 +28,7 @@ public class Jack {
     private final String[] args;
     private final Paths paths;
 
-    public static void main(String[] args) throws IOException, ArtifactResolutionException, DependencyCollectionException, DependencyResolutionException, NoLocalRepositoryManagerException, InterruptedException, ArtifactDescriptorException {
+    public static void main(String[] args) throws IOException, ArtifactResolutionException, DependencyCollectionException, DependencyResolutionException, NoLocalRepositoryManagerException, InterruptedException, ArtifactDescriptorException, ParseException {
         Paths paths = Paths.create();
 
         ProjectConfig config = ProjectConfig.read(paths.config());
@@ -42,7 +43,7 @@ public class Jack {
         this.paths = paths;
    }
 
-   private void run() throws ArtifactResolutionException, DependencyCollectionException, DependencyResolutionException, IOException, NoLocalRepositoryManagerException, InterruptedException, ArtifactDescriptorException {
+   private void run() throws ArtifactResolutionException, DependencyCollectionException, DependencyResolutionException, IOException, NoLocalRepositoryManagerException, InterruptedException, ArtifactDescriptorException, ParseException {
        if (args.length < 1) {
            log.error("You have to provide an argument!");
            return;

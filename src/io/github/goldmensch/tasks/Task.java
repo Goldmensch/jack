@@ -1,6 +1,7 @@
 package io.github.goldmensch.tasks;
 
 import io.github.goldmensch.Jack;
+import org.cyclonedx.exception.ParseException;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.repository.NoLocalRepositoryManagerException;
 import org.eclipse.aether.resolution.ArtifactDescriptorException;
@@ -24,7 +25,7 @@ public sealed abstract class Task permits BuildTask, DependenciesTask, RunTask {
         this.dependencyTypes = Arrays.asList(dependencyTypes);
     }
 
-    public void process() throws IOException, InterruptedException, ArtifactResolutionException, NoLocalRepositoryManagerException, DependencyCollectionException, DependencyResolutionException, ArtifactDescriptorException {
+    public void process() throws IOException, InterruptedException, ArtifactResolutionException, NoLocalRepositoryManagerException, DependencyCollectionException, DependencyResolutionException, ArtifactDescriptorException, ParseException {
         processWithDependencies(new HashMap<>());
     }
 
@@ -34,9 +35,9 @@ public sealed abstract class Task permits BuildTask, DependenciesTask, RunTask {
         return (T) dependencies.get(type);
     }
 
-    protected abstract void run() throws IOException, InterruptedException, ArtifactResolutionException, NoLocalRepositoryManagerException, DependencyCollectionException, DependencyResolutionException, ArtifactDescriptorException;
+    protected abstract void run() throws IOException, InterruptedException, ArtifactResolutionException, NoLocalRepositoryManagerException, DependencyCollectionException, DependencyResolutionException, ArtifactDescriptorException, ParseException;
 
-    private void processWithDependencies(Map<TaskType, Task> ranTasks) throws IOException, InterruptedException, ArtifactResolutionException, NoLocalRepositoryManagerException, DependencyCollectionException, DependencyResolutionException, ArtifactDescriptorException {
+    private void processWithDependencies(Map<TaskType, Task> ranTasks) throws IOException, InterruptedException, ArtifactResolutionException, NoLocalRepositoryManagerException, DependencyCollectionException, DependencyResolutionException, ArtifactDescriptorException, ParseException {
         for (TaskType type : dependencyTypes) {
             if (ranTasks.containsKey(type)) continue;
             Task task = type.instantiate(jack);

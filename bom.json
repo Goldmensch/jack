@@ -1,0 +1,169 @@
+{
+  "bomFormat" : "CycloneDX",
+  "specVersion" : "1.6",
+  "version" : 1,
+  "metadata" : {
+    "timestamp" : "2024-05-28T19:20:00Z",
+    "authors" : [
+      {
+        "name" : "Nick Hensel"
+      }
+    ],
+    "component" : {
+      "name" : "jack",
+      "version" : "0.1"
+    }
+  },
+  "components" : [
+    {
+      "group" : "org.tomlj",
+      "name" : "tomlj",
+      "version" : "1.1.1",
+      "hashes" : [
+        {
+          "alg" : "sha1",
+          "content" : "3c48b7b4014599bf89fee2edc8a9a70812db9c4c"
+        }
+      ],
+      "purl" : "pkg:maven/org.tomlj/tomlj@1.1.1",
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.tomlj/tomlj@1.1.1"
+    },
+    {
+      "group" : "org.cyclonedx",
+      "name" : "cyclonedx-core-java",
+      "version" : "9.0.1",
+      "hashes" : [
+        {
+          "alg" : "sha1",
+          "content" : "0be93de8db0c95eda2bfd21acb5984cc0f57fce4"
+        }
+      ],
+      "purl" : "pkg:maven/org.cyclonedx/cyclonedx-core-java@9.0.1",
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.cyclonedx/cyclonedx-core-java@9.0.1"
+    },
+    {
+      "group" : "org.apache.maven.resolver",
+      "name" : "maven-resolver-supplier",
+      "version" : "1.9.20",
+      "hashes" : [
+        {
+          "alg" : "sha1",
+          "content" : "34f4f1a99c2c22826c0e69c6c82af63375999396"
+        }
+      ],
+      "purl" : "pkg:maven/org.apache.maven.resolver/maven-resolver-supplier@1.9.20",
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.apache.maven.resolver/maven-resolver-supplier@1.9.20"
+    },
+    {
+      "group" : "org.apache.maven",
+      "name" : "maven-resolver-provider",
+      "version" : "3.9.7",
+      "hashes" : [
+        {
+          "alg" : "sha1",
+          "content" : "887c597650f7a557ca50312a07fcf41ca7537687"
+        }
+      ],
+      "purl" : "pkg:maven/org.apache.maven/maven-resolver-provider@3.9.7",
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.apache.maven/maven-resolver-provider@3.9.7"
+    },
+    {
+      "group" : "org.slf4j",
+      "name" : "slf4j-api",
+      "version" : "1.7.36",
+      "hashes" : [
+        {
+          "alg" : "sha1",
+          "content" : "6c62681a2f655b49963a5983b8b0950a6120ae14"
+        }
+      ],
+      "purl" : "pkg:maven/org.slf4j/slf4j-api@1.7.36",
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.slf4j/slf4j-api@1.7.36"
+    },
+    {
+      "group" : "org.slf4j",
+      "name" : "slf4j-simple",
+      "version" : "1.7.36",
+      "hashes" : [
+        {
+          "alg" : "sha1",
+          "content" : "a41f9cfe6faafb2eb83a1c7dd2d0dfd844e2a936"
+        }
+      ],
+      "purl" : "pkg:maven/org.slf4j/slf4j-simple@1.7.36",
+      "type" : "library",
+      "bom-ref" : "pkg:maven/org.slf4j/slf4j-simple@1.7.36"
+    }
+  ],
+  "dependencies" : [
+    {
+      "ref" : "pkg:maven/org.tomlj/tomlj@1.1.1",
+      "dependsOn" : [
+        "pkg:maven/org.antlr/antlr4-runtime@4.11.1",
+        "pkg:maven/org.checkerframework/checker-qual@3.21.2"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/org.cyclonedx/cyclonedx-core-java@9.0.1",
+      "dependsOn" : [
+        "pkg:maven/commons-codec/commons-codec@1.17.0",
+        "pkg:maven/commons-io/commons-io@2.16.1",
+        "pkg:maven/org.apache.commons/commons-lang3@3.14.0",
+        "pkg:maven/org.apache.commons/commons-collections4@4.4",
+        "pkg:maven/com.github.package-url/packageurl-java@1.5.0",
+        "pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-xml@2.17.1",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.17.1",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-annotations@2.17.1",
+        "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.17.1",
+        "pkg:maven/org.codehaus.woodstox/stax2-api@4.2.2",
+        "pkg:maven/com.fasterxml.woodstox/woodstox-core@6.6.2",
+        "pkg:maven/com.networknt/json-schema-validator@1.4.0",
+        "pkg:maven/com.ethlo.time/itu@1.8.0",
+        "pkg:maven/com.fasterxml.jackson.dataformat/jackson-dataformat-yaml@2.15.3",
+        "pkg:maven/org.yaml/snakeyaml@2.1"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/org.apache.maven.resolver/maven-resolver-supplier@1.9.20",
+      "dependsOn" : [
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-api@1.9.20",
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-util@1.9.20",
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-spi@1.9.20",
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-named-locks@1.9.20",
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-impl@1.9.20",
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-connector-basic@1.9.20",
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-transport-file@1.9.20",
+        "pkg:maven/org.apache.maven.resolver/maven-resolver-transport-http@1.9.20",
+        "pkg:maven/org.apache.httpcomponents/httpclient@4.5.14",
+        "pkg:maven/org.apache.httpcomponents/httpcore@4.4.16",
+        "pkg:maven/org.slf4j/jcl-over-slf4j@1.7.36",
+        "pkg:maven/org.apache.maven/maven-model-builder@3.9.6",
+        "pkg:maven/org.codehaus.plexus/plexus-interpolation@1.26",
+        "pkg:maven/org.apache.maven/maven-artifact@3.9.6",
+        "pkg:maven/org.apache.maven/maven-builder-support@3.9.6"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/org.apache.maven/maven-resolver-provider@3.9.7",
+      "dependsOn" : [
+        "pkg:maven/org.apache.maven/maven-model@3.9.7",
+        "pkg:maven/org.apache.maven/maven-repository-metadata@3.9.7",
+        "pkg:maven/org.codehaus.plexus/plexus-utils@3.5.1",
+        "pkg:maven/javax.inject/javax.inject@1"
+      ]
+    },
+    {
+      "ref" : "pkg:maven/org.slf4j/slf4j-api@1.7.36",
+      "dependsOn" : [ ]
+    },
+    {
+      "ref" : "pkg:maven/org.slf4j/slf4j-simple@1.7.36",
+      "dependsOn" : [ ]
+    }
+  ]
+}

@@ -11,6 +11,9 @@ mavenCentral = true
 
 [dependencies]
 "org.tomlj"."tomlj" = "1.1.1"
+
+"org.cyclonedx"."cyclonedx-core-java" = "9.0.1"
+
 "org.apache.maven.resolver"."maven-resolver-supplier" = "1.9.20"
 "org.apache.maven"."maven-resolver-provider" = "3.9.7"
 

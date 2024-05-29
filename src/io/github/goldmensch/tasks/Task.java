@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 
-public sealed abstract class Task permits BuildTask, DependenciesTask, RunTask {
+public sealed abstract class Task permits BuildTask, CreateBOMTask, DependenciesTask, RunTask {
 
     private static final Logger log = LoggerFactory.getLogger(Task.class);
     protected final Jack jack;

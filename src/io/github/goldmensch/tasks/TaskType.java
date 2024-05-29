@@ -6,7 +6,8 @@ import org.eclipse.aether.repository.NoLocalRepositoryManagerException;
 public enum TaskType {
     BUILD,
     RUN,
-    DEPENDENCIES
+    DEPENDENCIES,
+    BOM
     ;
 
     public Task instantiate(Jack jack) throws NoLocalRepositoryManagerException {
@@ -14,6 +15,7 @@ public enum TaskType {
             case BUILD -> new BuildTask(jack);
             case RUN -> new RunTask(jack);
             case DEPENDENCIES -> new DependenciesTask(jack);
+            case BOM -> new CreateBOMTask(jack);
         };
     }
 
@@ -22,6 +24,7 @@ public enum TaskType {
             case BuildTask ignored -> BUILD;
             case RunTask ignored -> RUN;
             case DependenciesTask ignored -> DEPENDENCIES;
+            case CreateBOMTask ignored -> BOM;
         };
     }
 }

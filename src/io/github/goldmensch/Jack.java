@@ -2,10 +2,7 @@ package io.github.goldmensch;
 
 import io.github.goldmensch.config.project.ProjectConfig;
 import io.github.goldmensch.sources.SourceSet;
-import io.github.goldmensch.tasks.BuildTask;
-import io.github.goldmensch.tasks.DependenciesTask;
-import io.github.goldmensch.tasks.RunTask;
-import io.github.goldmensch.tasks.Task;
+import io.github.goldmensch.tasks.*;
 import org.cyclonedx.exception.ParseException;
 import org.eclipse.aether.collection.DependencyCollectionException;
 import org.eclipse.aether.repository.NoLocalRepositoryManagerException;
@@ -53,6 +50,7 @@ public class Jack {
            case "build" -> new BuildTask(this);
            case "run" -> new RunTask(this);
            case "dependencies" -> new DependenciesTask(this);
+           case "bom" -> new CreateBOMTask(this);
            default -> throw new IllegalStateException("Unexpected task: " + args[0]);
        };
 

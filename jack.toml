@@ -1,7 +1,25 @@
+[project]
 name = "jack"
 version = "0.1"
-main = "io.github.goldmensch.Jack"
+author = "Nick Hensel"
+
+[repositories]
+mavenCentral = true
+
+[catalog]
+"slf4j" = { for.group = "org.slf4j", version = "1.7.36"}
 
 [dependencies]
-"org.tomlj:tomlj" = "1.1.1"
-"org.apache.maven:maven-model" = "3.9.6"
+"org.tomlj"."tomlj" = "1.1.1"
+
+"org.cyclonedx"."cyclonedx-core-java" = "9.0.1"
+
+"org.apache.maven.resolver"."maven-resolver-supplier" = "1.9.20"
+"org.apache.maven"."maven-resolver-provider" = "3.9.7"
+
+[dependencies."org.slf4j"]
+"slf4j-api" = {}
+"slf4j-simple" = {}
+
+[manifest]
+main = "io.github.goldmensch.Jack"

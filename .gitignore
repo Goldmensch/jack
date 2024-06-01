@@ -49,3 +49,6 @@ testDir
 
 .jack
 
+
+# Ignore Gradle build output directory
+build

@@ -22,10 +22,11 @@
         javaVersion = 21;
 
         jdk = pkgs."temurin-bin-${toString javaVersion}";
+        gradle = pkgs.gradle.override {java = jdk;};
        in {
          devShells.default = pkgs.mkShell {
            name = "Jack";
-           packages = with pkgs; [git jdk ];
+           packages = with pkgs; [git jdk gradle];
          };
        };
     };

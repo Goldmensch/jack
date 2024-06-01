@@ -1,5 +1,8 @@
 #! /bin/sh
-set -e
 
-classpath="jack-binary/jack.jar:jack-binary/libs/*"
-java -cp $classpath io.github.goldmensch.Jack ${@:1}
+if [[ $1 == "build" ]]; then
+  gradle build
+elif [[ $1 == "run" ]]; then
+  gradle run --args "$2"
+fi
+

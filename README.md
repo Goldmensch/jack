@@ -1,3 +1,9 @@
+> [!IMPORTANT]
+> Jack moved to [Codeberg.org](https://codeberg.org/goldmensch/jack), which is a
+> democratic community-driven, non-profit software development platform.
+>
+> Any further development takes place there, that means any information presented here may be out of date.
+
 # Jack - A jvm build tool, that aims to simplify things
 
 Jack is a jvm build tool, that aims to simplify the build process by providing easy and understandable configuration
